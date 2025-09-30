@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: cpg-dashboard-api
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm run server
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        fromDatabase:
+          name: cpg-dashboard-db
+          property: connectionString
+    healthCheckPath: /api/health
+
+  - type: web
+    name: cpg-dashboard-frontend
+    env: static
+    plan: free
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://cpg-dashboard-api.onrender.com
+
+databases:
+  - name: cpg-dashboard-db
+    plan: free
