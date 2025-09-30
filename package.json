@@ -5,15 +5,14 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
-    "lint": "eslint .",
-    "preview": "vite preview",
     "server": "node server/index.cjs",
-    "dev:full": "concurrently \\npm:server\\ \\vite\"",
-    "start": "node server/index.cjs",
+    "dev:full": "concurrently \"npm:server\" \"vite\"",
     "build:frontend": "tsc -b && vite build",
     "build:server": "echo 'Server build complete'",
-    "postbuild": "npm run build:server"
+    "build": "npm run build:frontend && npm run build:server",
+    "preview": "vite preview",
+    "lint": "eslint .",
+    "start": "node server/index.cjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
@@ -51,7 +50,7 @@
     "concurrently": "^9.2.1",
     "cors": "^2.8.5",
     "date-fns": "^3.6.0",
-    "dotenv": "^17.2.2",
+    "dotenv": "^16.4.5",
     "embla-carousel-react": "^8.3.0",
     "express": "^5.1.0",
     "input-otp": "^1.2.4",
