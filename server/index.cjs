@@ -59,13 +59,23 @@ async function getDb() {
 }
 
 app.get('/api/health', async (req, res) => {
-  try {
-    const db = await getDb();
-    await db.command({ ping: 1 });
-    res.json({ status: 'ok', dbConnected: true, dbName });
-  } catch (e) {
-    res.status(500).json({ status: 'error', dbConnected: false, error: e.message });
+  // Always respond fast; report DB status without failing health check
+  async function pingDbWithTimeout(timeoutMs) {
+    const timeout = new Promise((resolve) => setTimeout(() => resolve({ ok: false, reason: 'timeout' }), timeoutMs));
+    const attempt = (async () => {
+      try {
+        const db = await getDb();
+        await db.command({ ping: 1 });
+        return { ok: true };
+      } catch (e) {
+        return { ok: false, reason: e.message };
+      }
+    })();
+    return Promise.race([attempt, timeout]);
   }
+
+  const result = await pingDbWithTimeout(3000);
+  res.json({ status: 'ok', dbConnected: !!result.ok, dbName, reason: result.reason });
 });
 
 // Schema discovery endpoint
