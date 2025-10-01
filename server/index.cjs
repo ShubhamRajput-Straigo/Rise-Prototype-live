@@ -58,8 +58,14 @@ async function getDb() {
   return client.db(dbName);
 }
 
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok' });
+app.get('/api/health', async (req, res) => {
+  try {
+    const db = await getDb();
+    await db.command({ ping: 1 });
+    res.json({ status: 'ok', dbConnected: true, dbName });
+  } catch (e) {
+    res.status(500).json({ status: 'error', dbConnected: false, error: e.message });
+  }
 });
 
 // Schema discovery endpoint
