@@ -7,10 +7,6 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
-      - key: MONGODB_URI
-        fromDatabase:
-          name: cpg-dashboard-db
-          property: connectionString
       - key: MONGODB_DB
         value: CPG  # 👈 put your database name here
     healthCheckPath: /api/health
