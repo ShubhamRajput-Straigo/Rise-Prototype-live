@@ -12,7 +12,7 @@ services:
           name: cpg-dashboard-db
           property: connectionString
       - key: MONGODB_DB
-        value: cpg-dashboard   # 👈 put your database name here
+        value: CPG  # 👈 put your database name here
     healthCheckPath: /api/health
 
   - type: web
