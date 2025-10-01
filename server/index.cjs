@@ -25,7 +25,7 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 // Handle preflight quickly
-app.options('*', cors());
+app.options('/:path(*)', cors());
 app.use(express.json());
 
 const mongoUri = process.env.MONGODB_URI;
