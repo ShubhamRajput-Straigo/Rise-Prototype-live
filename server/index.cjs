@@ -24,8 +24,23 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
-// Handle preflight quickly
-app.options('/:path(*)', cors());
+// Handle preflight without wildcard path patterns
+app.use((req, res, next) => {
+  if (req.method === 'OPTIONS') {
+    const requestOrigin = req.headers.origin;
+    if (!requestOrigin || allowedOrigins.includes(requestOrigin)) {
+      if (requestOrigin) {
+        res.header('Access-Control-Allow-Origin', requestOrigin);
+        res.header('Vary', 'Origin');
+      }
+      res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
+      res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+      res.header('Access-Control-Allow-Credentials', 'true');
+      return res.sendStatus(204);
+    }
+  }
+  next();
+});
 app.use(express.json());
 
 const mongoUri = process.env.MONGODB_URI;
