@@ -6,6 +6,7 @@ import { BarChart3, TrendingUp, Target,Home as HomeIcon, Users, Building2, Packa
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import KPICard from '@/components/KPICard';
+import { fetchJson } from '@/lib/api';
 
 // TypeScript interfaces
 interface User {
@@ -50,14 +51,12 @@ const HomePage: React.FC = () => {
       setLoading(true);
       setError(null);
       try {
-        // Pass filters as query params
         const params = new URLSearchParams();
         Object.entries(filters).forEach(([key, value]) => {
           if (value && value !== 'All') params.append(key, value);
         });
-        const res = await fetch(`/api/kpis?${params.toString()}`);
-        if (!res.ok) throw new Error(await res.text());
-        const data: KPIData = await res.json();
+        const url = `/api/kpis${params.toString() ? `?${params.toString()}` : ''}`;
+        const data = await fetchJson<KPIData>(url);
         if (!cancelled) setKpis(data);
       } catch (e: unknown) {
         const errorMessage = e instanceof Error ? e.message : 'Failed to load KPIs';

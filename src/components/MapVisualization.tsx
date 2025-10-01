@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { fetchJson } from '@/lib/api';
 
 type MapPoint = { city: string; performance: number; region?: string };
 
@@ -7,9 +8,8 @@ const MapVisualization: React.FC = () => {
 
   useEffect(() => {
     // For now, reuse hierarchy-performance to simulate area points by store names
-    fetch('/api/hierarchy-performance')
-      .then(r => r.json())
-      .then((data: Array<{ store: string; performance: number }>) => {
+    fetchJson<Array<{ store: string; performance: number }>>('/api/hierarchy-performance')
+      .then((data) => {
         const mapped: MapPoint[] = data.map((d) => ({ city: d.store, performance: d.performance }));
         setPoints(mapped);
       })

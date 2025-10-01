@@ -1,5 +1,15 @@
+const API_BASE = (typeof window !== 'undefined' ? (window as any).__API_BASE__ : undefined) || import.meta.env.VITE_API_URL || '';
+
+function withBase(path: string): string {
+  if (!API_BASE) return path;
+  if (path.startsWith('http')) return path;
+  if (API_BASE.endsWith('/') && path.startsWith('/')) return API_BASE.slice(0, -1) + path;
+  if (!API_BASE.endsWith('/') && !path.startsWith('/')) return API_BASE + '/' + path;
+  return API_BASE + path;
+}
+
 export async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(url, init);
+  const res = await fetch(withBase(url), init);
   if (!res.ok) {
     const text = await res.text();
     throw new Error(`Request failed ${res.status}: ${text}`);
