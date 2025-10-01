@@ -2,6 +2,7 @@ services:
   - type: web
     name: cpg-dashboard-api
     env: node
+    plan: free
     buildCommand: npm install
     startCommand: npm run server
     envVars:
